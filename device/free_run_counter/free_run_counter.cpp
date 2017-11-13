@@ -2,7 +2,7 @@
  * @file	free_run_counter.cpp
  * @brief	free-running counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 11, 2017
+ * @date	Nov 14, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -23,6 +23,9 @@ namespace sdpses {
 
 namespace device {
 
+/**
+ * @brief	Constructor
+ */
 FreeRunCounter::FreeRunCounter()
 	: timer_(StaticFrcTimerFactory::getInstance())
 	, kCOUNTS_PER_1024NSEC((timer_.getFrequency() + (976562 - 1)) / 976562)
@@ -43,6 +46,9 @@ FreeRunCounter::FreeRunCounter()
 	timer_.start();
 }
 
+/**
+ * @brief	Destructor
+ */
 FreeRunCounter::~FreeRunCounter()
 {
 }
