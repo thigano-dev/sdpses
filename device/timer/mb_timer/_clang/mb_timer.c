@@ -2,7 +2,7 @@
  * @file	mb_timer.c
  * @brief	Xilinx timer/counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Nov 14, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -325,6 +325,7 @@ static void interruptHandler(void* const context)
 {
 	struct MbTimer* const instance = (struct MbTimer*)context;
 	const uint32_t csr = XTmrCtr_GetControlStatusReg(instance->baseAddr, kTMR_NUM0);
+
 	if (csr & XTC_CSR_INT_OCCURED_MASK) {
 		XTmrCtr_SetControlStatusReg(instance->baseAddr, kTMR_NUM0, csr);
 	}

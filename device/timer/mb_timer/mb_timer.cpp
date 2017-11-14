@@ -2,7 +2,7 @@
  * @file	mb_timer.cpp
  * @brief	Xilinx timer/counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Nov 14, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -208,6 +208,7 @@ void MbTimer::interruptHandler(void* const context)
 {
 	MbTimer* const instance = reinterpret_cast<MbTimer*>(context);
 	const uint32_t csr = XTmrCtr_GetControlStatusReg(instance->kBASE_ADDR, kTMR_NUM0);
+
 	if (csr & XTC_CSR_INT_OCCURED_MASK) {
 		XTmrCtr_SetControlStatusReg(instance->kBASE_ADDR, kTMR_NUM0, csr);
 	}
