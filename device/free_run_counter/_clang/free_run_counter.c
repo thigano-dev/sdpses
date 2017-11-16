@@ -2,7 +2,7 @@
  * @file	free_run_counter.c
  * @brief	free-running counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 11, 2017
+ * @date	Nov 17, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -45,14 +45,6 @@ static uint32_t measurementUnitUsec_;
 static uint32_t measurementUnitMsec_;
 
 static struct Timer* timer_;
-
-static inline uint32_t diff_count(const uint32_t start_count, const uint32_t end_count) {
-#if defined(USE_FRC_COUNT_UP_TYPE_)
-	return (end_count - start_count);
-#else
-	return (start_count - end_count);
-#endif
-}
 
 /**
  * @brief	Get instance
@@ -138,6 +130,20 @@ static int ctor(void)
  * @return	none
  */
 //static void dtor(void) {}
+
+/**
+ * @brief	Return the difference between counts
+ * @param	start_count		start counter value
+ * @param	end_count		end counter value
+ * @return	the difference between counts
+ */
+static inline uint32_t diff_count(const uint32_t start_count, const uint32_t end_count) {
+#if defined(USE_FRC_COUNT_UP_TYPE_)
+	return (end_count - start_count);
+#else
+	return (start_count - end_count);
+#endif
+}
 
 /**
  * @brief	Get current counter value

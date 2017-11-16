@@ -2,7 +2,7 @@
  * @file	free_run_counter.cpp
  * @brief	free-running counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 14, 2017
+ * @date	Nov 17, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -22,6 +22,16 @@
 namespace sdpses {
 
 namespace device {
+
+/**
+ * @brief	Get instance
+ * @return	instance
+ */
+const FreeRunCounter& FreeRunCounter::getInstance()
+{
+	static const FreeRunCounter instance;
+	return instance;
+}
 
 /**
  * @brief	Constructor
@@ -53,22 +63,18 @@ FreeRunCounter::~FreeRunCounter()
 {
 }
 
+/**
+ * @brief	Return the difference between counts
+ * @param	start_count		start counter value
+ * @param	end_count		end counter value
+ * @return	the difference between counts
+ */
 inline uint32_t FreeRunCounter::diff_count(const uint32_t start_count, const uint32_t end_count) const {
 #if defined(USE_FRC_COUNT_UP_TYPE_)
 	return (end_count - start_count);
 #else
 	return (start_count - end_count);
 #endif
-}
-
-/**
- * @brief	Get instance
- * @return	instance
- */
-const FreeRunCounter& FreeRunCounter::getInstance()
-{
-	static const FreeRunCounter instance;
-	return instance;
 }
 
 /**
