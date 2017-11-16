@@ -2,7 +2,7 @@
  * @file	mb_uart.cpp
  * @brief	Xilinx Uart Lite
  * @author	Tsuguyoshi Higano
- * @date	Nov 14, 2017
+ * @date	Nov 17, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -430,6 +430,7 @@ void MbUart::interruptHandler(void* const context)
 	if (status & instance->errorMask_) {
 		instance->lastError_ |= (status & instance->errorMask_);
 		XUartLite_SetControlReg(instance->kBASE_ADDR, XUL_CR_FIFO_RX_RESET);
+		XUartLite_EnableIntr(instance->kBASE_ADDR);
 	}
 
 	if (status & XUL_SR_RX_FIFO_VALID_DATA) { instance->receiveInterrupt(); }
