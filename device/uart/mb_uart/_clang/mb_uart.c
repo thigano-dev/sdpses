@@ -49,6 +49,14 @@ struct MbUart {
 	const FreeRunCounter* freeRunCounter;
 };
 
+static inline void XUartLite_WriteTxFifoReg(const uint32_t base_addr, const uint8_t data) {
+	XUartLite_WriteReg(base_addr, XUL_TX_FIFO_OFFSET, data);
+}
+
+static inline uint8_t XUartLite_ReadRxFifoReg(const uint32_t base_addr) {
+	return XUartLite_ReadReg(base_addr, XUL_RX_FIFO_OFFSET);
+}
+
 static int validateSerialParams(const SerialParams* params);
 
 static void clearBuffer(struct MbUart* instance);
@@ -216,6 +224,7 @@ int MbUart_setup(struct Uart* const self, const SerialParams* const params)
 	clearBuffer(instance);
 	instance->lastError = 0;
 
+	XUartLite_SetControlReg(instance->baseAddr, (XUL_CR_FIFO_RX_RESET | XUL_CR_FIFO_TX_RESET));
 	setupInterrupt(instance);
 	XIntc_EnableIntr(instance->icBase, instance->irqMask);
 
@@ -323,9 +332,9 @@ int MbUart_put(struct Uart* const self, const uint8_t data)
 	XIntc_DisableIntr(instance->icBase, instance->irqMask);
 	if ((XUartLite_GetStatusReg(instance->baseAddr) & XUL_SR_TX_FIFO_FULL) == 0) {
 		if (FixedQueue8_empty(instance->txQueue)) {
-			XUartLite_SendByte(instance->baseAddr, data);
+			XUartLite_WriteTxFifoReg(instance->baseAddr, data);
 		} else {
-			XUartLite_SendByte(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+			XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
 			FixedQueue8_pop(instance->txQueue);
 			FixedQueue8_push(instance->txQueue, data);
 		}
@@ -433,7 +442,7 @@ int MbUart_flush(struct Uart* const self)
 	XIntc_DisableIntr(instance->icBase, instance->irqMask);
 	while (!FixedQueue8_empty(instance->txQueue)) {
 		if (waitTxFifoReady(instance)) { goto TERMINATE; }
-		XUartLite_SendByte(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 	if (waitTxFifoEmpty(instance)) { goto TERMINATE; }
@@ -497,7 +506,7 @@ static void writeToTxFifo(struct MbUart* const instance)
 	for (int i = 0; i < XUL_FIFO_SIZE; i++) {
 		if (XUartLite_GetStatusReg(instance->baseAddr) & XUL_SR_TX_FIFO_FULL) { break; }
 		if (FixedQueue8_empty(instance->txQueue)) { break; }
-		XUartLite_SendByte(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 }
@@ -579,7 +588,6 @@ static void setupInterrupt(struct MbUart* const instance)
 		|	XUL_SR_OVERRUN_ERROR	/*!< receiver-overrun error */
 	);
 
-	XUartLite_SetControlReg(instance->baseAddr, (XUL_CR_FIFO_RX_RESET | XUL_CR_FIFO_TX_RESET));
 	XUartLite_EnableIntr(instance->baseAddr);
 
 	XIntc_RegisterHandler(instance->icBase, instance->irq, interruptHandler, instance);
@@ -597,8 +605,7 @@ static void interruptHandler(void* const context)
 
 	if (status & instance->errorMask) {
 		instance->lastError |= (status & instance->errorMask);
-		XUartLite_SetControlReg(instance->baseAddr, XUL_CR_FIFO_RX_RESET);
-		XUartLite_EnableIntr(instance->baseAddr);
+		XUartLite_SetControlReg(instance->baseAddr, (XUL_CR_ENABLE_INTR | XUL_CR_FIFO_RX_RESET));
 	}
 
 	if (status & XUL_SR_RX_FIFO_VALID_DATA) { receiveInterrupt(instance); }
@@ -628,9 +635,9 @@ static void receiveInterrupt(struct MbUart* const instance)
 		if ((XUartLite_GetStatusReg(instance->baseAddr) & XUL_SR_RX_FIFO_VALID_DATA) == 0) { break; }
 		if (FixedQueue8_full(instance->rxQueue)) {
 			instance->lastError |= XUL_SR_OVERRUN_ERROR;
-			XUartLite_RecvByte(instance->baseAddr); /*!< thrown away */
+			XUartLite_ReadRxFifoReg(instance->baseAddr); /*!< thrown away */
 		} else {
-			FixedQueue8_push(instance->rxQueue, XUartLite_RecvByte(instance->baseAddr));
+			FixedQueue8_push(instance->rxQueue, XUartLite_ReadRxFifoReg(instance->baseAddr));
 		}
 	}
 }

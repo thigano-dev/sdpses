@@ -25,6 +25,16 @@ namespace sdpses {
 
 namespace device {
 
+namespace {
+inline void XUartLite_WriteTxFifoReg(const uint32_t base_addr, const uint8_t data) {
+	XUartLite_WriteReg(base_addr, XUL_TX_FIFO_OFFSET, data);
+}
+
+inline uint8_t XUartLite_ReadRxFifoReg(const uint32_t base_addr) {
+	return XUartLite_ReadReg(base_addr, XUL_RX_FIFO_OFFSET);
+}
+} /* namespace */
+
 /**
  * @brief	Constructor
  * @param	base_addr		base address
@@ -81,6 +91,7 @@ int MbUart::setup(const SerialParams& params)
 	clearBuffer();
 	lastError_ = 0;
 
+	XUartLite_SetControlReg(kBASE_ADDR, (XUL_CR_FIFO_RX_RESET | XUL_CR_FIFO_TX_RESET));
 	setupInterrupt();
 	XIntc_EnableIntr(kIC_BASE, kIRQ_MASK);
 
@@ -184,9 +195,9 @@ int MbUart::put(const uint8_t data)
 	XIntc_DisableIntr(kIC_BASE, kIRQ_MASK);
 	if ((XUartLite_GetStatusReg(kBASE_ADDR) & XUL_SR_TX_FIFO_FULL) == 0) {
 		if (txQueue_.empty()) {
-			XUartLite_SendByte(kBASE_ADDR, data);
+			XUartLite_WriteTxFifoReg(kBASE_ADDR, data);
 		} else {
-			XUartLite_SendByte(kBASE_ADDR, txQueue_.peek());
+			XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
 			txQueue_.pop();
 			txQueue_.push(data);
 		}
@@ -282,7 +293,7 @@ int MbUart::flush()
 	XIntc_DisableIntr(kIC_BASE, kIRQ_MASK);
 	while (!txQueue_.empty()) {
 		if (waitTxFifoReady()) { goto TERMINATE; }
-		XUartLite_SendByte(kBASE_ADDR, txQueue_.peek());
+		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
 		txQueue_.pop();
 	}
 	if (waitTxFifoEmpty()) { goto TERMINATE; }
@@ -343,7 +354,7 @@ void MbUart::writeToTxFifo()
 	for (int i = 0; i < XUL_FIFO_SIZE; i++) {
 		if (XUartLite_GetStatusReg(kBASE_ADDR) & XUL_SR_TX_FIFO_FULL) { break; }
 		if (txQueue_.empty()) { break; }
-		XUartLite_SendByte(kBASE_ADDR, txQueue_.peek());
+		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
 		txQueue_.pop();
 	}
 }
@@ -411,7 +422,6 @@ void MbUart::setupInterrupt()
 		|	XUL_SR_OVERRUN_ERROR	/*!< receiver-overrun error */
 	);
 
-	XUartLite_SetControlReg(kBASE_ADDR, (XUL_CR_FIFO_RX_RESET | XUL_CR_FIFO_TX_RESET));
 	XUartLite_EnableIntr(kBASE_ADDR);
 
 	XIntc_RegisterHandler(kIC_BASE, kIRQ, interruptHandler, this);
@@ -429,8 +439,7 @@ void MbUart::interruptHandler(void* const context)
 
 	if (status & instance->errorMask_) {
 		instance->lastError_ |= (status & instance->errorMask_);
-		XUartLite_SetControlReg(instance->kBASE_ADDR, XUL_CR_FIFO_RX_RESET);
-		XUartLite_EnableIntr(instance->kBASE_ADDR);
+		XUartLite_SetControlReg(instance->kBASE_ADDR, (XUL_CR_ENABLE_INTR | XUL_CR_FIFO_RX_RESET));
 	}
 
 	if (status & XUL_SR_RX_FIFO_VALID_DATA) { instance->receiveInterrupt(); }
@@ -458,9 +467,9 @@ void MbUart::receiveInterrupt()
 		if ((XUartLite_GetStatusReg(kBASE_ADDR) & XUL_SR_RX_FIFO_VALID_DATA) == 0) { break; }
 		if (rxQueue_.full()) {
 			lastError_ |= XUL_SR_OVERRUN_ERROR;
-			XUartLite_RecvByte(kBASE_ADDR); /*!< thrown away */
+			XUartLite_ReadRxFifoReg(kBASE_ADDR); /*!< thrown away */
 		} else {
-			rxQueue_.push(XUartLite_RecvByte(kBASE_ADDR));
+			rxQueue_.push(XUartLite_ReadRxFifoReg(kBASE_ADDR));
 		}
 	}
 }
