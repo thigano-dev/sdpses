@@ -2,7 +2,7 @@
  * @file	nios_timer.cpp
  * @brief	Altera Avalon Timer
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Nov 17, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -21,13 +21,13 @@
 #include "lib_assert.h"
 #include "lib_debug.h"
 
-namespace {
-const uint32_t kINVALID_VALUE = 0xFFFFFFFFUL;
-} /* namespace */
-
 namespace sdpses {
 
 namespace device {
+
+namespace {
+const uint32_t kINVALID_VALUE = 0xFFFFFFFFUL;
+} /* namespace */
 
 /**
  * @brief	Constructor
