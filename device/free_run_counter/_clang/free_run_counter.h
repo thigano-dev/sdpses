@@ -2,7 +2,7 @@
  * @file	free_run_counter.h
  * @brief	free-running counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 11, 2017
+ * @date	Dec 20, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -31,7 +31,7 @@
 
 	// measure
 	const uint32_t startCount = freeRunCounter->now();
-	(proces something)
+	(process something)
 	const uint32_t endCount = freeRunCounter->now();
 	const uint32_t durationTimeMsec = freeRunCounter->measureDurationMsec(startCount, endCount);
 	@endcode
