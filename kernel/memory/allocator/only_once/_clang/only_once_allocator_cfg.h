@@ -3,7 +3,7 @@
  * @brief	only once allocator configuration
  */
 
-//#define ONLY_ONCE_ALLOCATOR_BASE_ADDR 0x00000000UL
+//#define ONLY_ONCE_ALLOCATOR_MEMORY_POOL_BASE 0x00000000UL
 
 enum { kONLY_ONCE_ALLOCATOR_SIZE_MAX = (1024 * 16) };
 

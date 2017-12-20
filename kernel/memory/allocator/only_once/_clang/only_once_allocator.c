@@ -2,7 +2,7 @@
  * @file	only_once_allocator.c
  * @brief	only once allocator
  * @author	Tsuguyoshi Higano
- * @date	Nov 14, 2017
+ * @date	Dec 04, 2017
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
@@ -24,8 +24,8 @@
 
 static struct Allocator allocator_;
 
-#if defined(ONLY_ONCE_ALLOCATOR_BASE_ADDR)
-static uint8_t* const memoryPool_ = (uint8_t*)ONLY_ONCE_ALLOCATOR_BASE_ADDR;
+#if defined(ONLY_ONCE_ALLOCATOR_MEMORY_POOL_BASE)
+static uint8_t* const memoryPool_ = (uint8_t*)ONLY_ONCE_ALLOCATOR_MEMORY_POOL_BASE;
 #else
 static uint8_t memoryPool_[kONLY_ONCE_ALLOCATOR_SIZE_MAX];
 #endif
