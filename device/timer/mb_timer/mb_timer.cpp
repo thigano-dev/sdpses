@@ -2,12 +2,12 @@
  * @file	mb_timer.cpp
  * @brief	Xilinx timer/counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 14, 2017
+ * @date	Mar 25, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -46,7 +46,7 @@ MbTimer::MbTimer(const uint32_t base_addr, const uint32_t freq,
 	, callbackArg_(0)
 {
 	DEBUG_PRINTF_("<MicroBlaze Timer parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	DEBUG_PRINTF_("  FREQ          : [%lu", (freq / 1000000UL));
 	DEBUG_PRINTF_(".%luMHz]\r\n", (freq % 1000000UL));
 	DEBUG_PRINTF_("  IC BASE       : [H'%08lX]\r\n", ic_base);
@@ -72,7 +72,7 @@ MbTimer::MbTimer(const uint32_t base_addr, const uint32_t freq)
 	, callbackArg_(0)
 {
 	DEBUG_PRINTF_("<MicroBlaze Timer parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	DEBUG_PRINTF_("  FREQ          : [%lu", (freq / 1000000UL));
 	DEBUG_PRINTF_(".%luMHz]\r\n", (freq % 1000000UL));
 	DEBUG_PRINTF_("\r\n");

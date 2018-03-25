@@ -2,12 +2,12 @@
  * @file	nios_gpio.c
  * @brief	Altera Avalon PIO
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Mar 25, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -131,7 +131,7 @@ int NiosGpio_ctorWithInterrupt(struct NiosGpio* const instance, const uint32_t b
 		const uint32_t ic_id, const uint32_t irq, const NiosGpio_InterruptTrigger int_trg)
 {
 	DEBUG_PRINTF_("<NiosII GPIO parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	if (ic_id != kINVALID_VALUE) {
 		DEBUG_PRINTF_("  IC ID         : [");
 		if (ic_id == 0UL) {

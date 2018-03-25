@@ -2,12 +2,12 @@
  * @file	mb_gpio.c
  * @brief	Xilinx General Purpose I/O
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Mar 25, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -134,7 +134,7 @@ int MbGpio_ctorWithInterrupt(struct MbGpio* const instance,
 		const uint32_t base_addr, const uint32_t ic_base, const uint32_t irq)
 {
 	DEBUG_PRINTF_("<MicroBlaze GPIO parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	if (ic_base) {
 		DEBUG_PRINTF_("  IC BASE       : [H'%08lX]\r\n", ic_base);
 		DEBUG_PRINTF_("  IRQ           : [%u]\r\n", (unsigned int)irq);

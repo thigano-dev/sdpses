@@ -2,12 +2,12 @@
  * @file	nios_gpio.cpp
  * @brief	Altera Avalon PIO
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Mar 25, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -47,7 +47,7 @@ NiosGpio::NiosGpio(const uint32_t base_addr, const uint32_t ic_id,
 	, callbackArg_(0)
 {
 	DEBUG_PRINTF_("<NiosII GPIO parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	DEBUG_PRINTF_("  IC ID         : [");
 	if (ic_id == 0UL) {
 		DEBUG_PRINTF_("IIC: in NiosII Core]\r\n");
@@ -86,7 +86,7 @@ NiosGpio::NiosGpio(const uint32_t base_addr)
 	, callbackArg_(0)
 {
 	DEBUG_PRINTF_("<NiosII GPIO parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	DEBUG_PRINTF_("\r\n");
 
 	IOWR_ALTERA_AVALON_PIO_IRQ_MASK(kBASE_ADDR, interruptFlags_);

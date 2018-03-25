@@ -2,12 +2,12 @@
  * @file	nios_timer.c
  * @brief	Altera Avalon Timer
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Mar 25, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -135,7 +135,7 @@ int NiosTimer_ctorWithInterrupt(struct NiosTimer* const instance,
 		const uint32_t base_addr, const uint32_t freq, const uint32_t ic_id, const uint32_t irq)
 {
 	DEBUG_PRINTF_("<NiosII Timer parameters>\r\n");
-	DEBUG_PRINTF_("  BASE_ADDR     : [H'%08lX]\r\n", base_addr);
+	DEBUG_PRINTF_("  BASE ADDR     : [H'%08lX]\r\n", base_addr);
 	DEBUG_PRINTF_("  FREQ          : [%lu.", (freq / 1000000UL));
 	DEBUG_PRINTF_("%luMHz]\r\n", (freq % 1000000UL));
 	if (ic_id != kINVALID_VALUE) {
