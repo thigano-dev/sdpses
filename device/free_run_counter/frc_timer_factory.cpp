@@ -1,13 +1,13 @@
 /**
- * @file	static_frc_timer_factory.cpp
- * @brief	static free-running counter timer factory
+ * @file	frc_timer_factory.cpp
+ * @brief	free-running counter timer factory
  * @author	Tsuguyoshi Higano
- * @date	Nov 11, 2017
+ * @date	Apr 6, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -15,7 +15,7 @@
  */
 
 #include "system_parameter_definition.h"
-#include "static_frc_timer_factory.h"
+#include "frc_timer_factory.h"
 
 #if defined(__NIOS2__)
 #  include "nios_timer.h" /*!< only count-down */
@@ -29,15 +29,15 @@ namespace sdpses {
 
 namespace device {
 
-StaticFrcTimerFactory::StaticFrcTimerFactory()
+FrcTimerFactory::FrcTimerFactory()
 {
 }
 
-StaticFrcTimerFactory::~StaticFrcTimerFactory()
+FrcTimerFactory::~FrcTimerFactory()
 {
 }
 
-Timer& StaticFrcTimerFactory::getInstance()
+Timer& FrcTimerFactory::getInstance()
 {
 #if defined(__NIOS2__)
 	static NiosTimer timer(FREE_RUN_TIMER_BASE, FREE_RUN_TIMER_FREQ);

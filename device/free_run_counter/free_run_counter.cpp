@@ -2,12 +2,12 @@
  * @file	free_run_counter.cpp
  * @brief	free-running counter
  * @author	Tsuguyoshi Higano
- * @date	Nov 17, 2017
+ * @date	Apr 6, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -15,7 +15,7 @@
  */
 
 #include "free_run_counter.h"
-#include "static_frc_timer_factory.h"
+#include "frc_timer_factory.h"
 #include "timer.h"
 #include "lib_assert.h"
 
@@ -37,7 +37,7 @@ const FreeRunCounter& FreeRunCounter::getInstance()
  * @brief	Constructor
  */
 FreeRunCounter::FreeRunCounter()
-	: timer_(StaticFrcTimerFactory::getInstance())
+	: timer_(FrcTimerFactory::getInstance())
 	, kCOUNTS_PER_1024NSEC((timer_.getFrequency() + (976562 - 1)) / 976562)
 	, kCOUNTS_PER_USEC((timer_.getFrequency() + (1000000 - 1)) / 1000000)
 	, kCOUNTS_PER_MSEC((timer_.getFrequency() + (1000 - 1)) / 1000)
