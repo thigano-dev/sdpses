@@ -2,12 +2,12 @@
  * @file	fixed_queue.h
  * @brief	fixed-size queue
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -38,8 +38,8 @@ public:
 	void clear();
 	void push(const T& element);
 	void pop();
-	T& peek();
-	const T& peek() const;
+	T& front();
+	const T& front() const;
 
 	bool empty() const;
 	bool full() const;

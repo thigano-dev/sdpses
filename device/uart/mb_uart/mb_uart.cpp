@@ -2,12 +2,12 @@
  * @file	mb_uart.cpp
  * @brief	Xilinx Uart Lite
  * @author	Tsuguyoshi Higano
- * @date	Nov 17, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -173,7 +173,7 @@ int MbUart::get(uint8_t* const data)
 
 	XIntc_DisableIntr(kIC_BASE, kIRQ_MASK);
 	if (!rxQueue_.empty()) {
-		*data = rxQueue_.peek();
+		*data = rxQueue_.front();
 		rxQueue_.pop();
 		rc = 0;
 	}
@@ -197,7 +197,7 @@ int MbUart::put(const uint8_t data)
 		if (txQueue_.empty()) {
 			XUartLite_WriteTxFifoReg(kBASE_ADDR, data);
 		} else {
-			XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
+			XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.front());
 			txQueue_.pop();
 			txQueue_.push(data);
 		}
@@ -225,7 +225,7 @@ int MbUart::read(uint8_t data_buff[], const unsigned int data_count)
 	XIntc_DisableIntr(kIC_BASE, kIRQ_MASK);
 	if (rxQueue_.size() >= data_count) {
 		for (unsigned int i = 0; i < data_count; i++) {
-			data_buff[i] = rxQueue_.peek();
+			data_buff[i] = rxQueue_.front();
 			rxQueue_.pop();
 		}
 		rc = 0;
@@ -293,7 +293,7 @@ int MbUart::flush()
 	XIntc_DisableIntr(kIC_BASE, kIRQ_MASK);
 	while (!txQueue_.empty()) {
 		if (waitTxFifoReady()) { goto TERMINATE; }
-		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
+		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.front());
 		txQueue_.pop();
 	}
 	if (waitTxFifoEmpty()) { goto TERMINATE; }
@@ -354,7 +354,7 @@ void MbUart::writeToTxFifo()
 	for (int i = 0; i < XUL_FIFO_SIZE; i++) {
 		if (XUartLite_GetStatusReg(kBASE_ADDR) & XUL_SR_TX_FIFO_FULL) { break; }
 		if (txQueue_.empty()) { break; }
-		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.peek());
+		XUartLite_WriteTxFifoReg(kBASE_ADDR, txQueue_.front());
 		txQueue_.pop();
 	}
 }

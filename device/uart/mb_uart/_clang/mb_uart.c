@@ -2,12 +2,12 @@
  * @file	mb_uart.c
  * @brief	Xilinx Uart Lite
  * @author	Tsuguyoshi Higano
- * @date	Nov 17, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -308,7 +308,7 @@ int MbUart_get(struct Uart* const self, uint8_t* const data)
 
 	XIntc_DisableIntr(instance->icBase, instance->irqMask);
 	if (!FixedQueue8_empty(instance->rxQueue)) {
-		*data = FixedQueue8_peek(instance->rxQueue);
+		*data = FixedQueue8_front(instance->rxQueue);
 		FixedQueue8_pop(instance->rxQueue);
 		rc = 0;
 	}
@@ -334,7 +334,7 @@ int MbUart_put(struct Uart* const self, const uint8_t data)
 		if (FixedQueue8_empty(instance->txQueue)) {
 			XUartLite_WriteTxFifoReg(instance->baseAddr, data);
 		} else {
-			XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+			XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 			FixedQueue8_pop(instance->txQueue);
 			FixedQueue8_push(instance->txQueue, data);
 		}
@@ -365,7 +365,7 @@ int MbUart_read(struct Uart* const self, uint8_t data_buff[], const unsigned int
 	if (FixedQueue8_size(instance->rxQueue) >= data_count) {
 		unsigned int i;
 		for (i = 0; i < data_count; i++) {
-			data_buff[i] = FixedQueue8_peek(instance->rxQueue);
+			data_buff[i] = FixedQueue8_front(instance->rxQueue);
 			FixedQueue8_pop(instance->rxQueue);
 		}
 		rc = 0;
@@ -442,7 +442,7 @@ int MbUart_flush(struct Uart* const self)
 	XIntc_DisableIntr(instance->icBase, instance->irqMask);
 	while (!FixedQueue8_empty(instance->txQueue)) {
 		if (waitTxFifoReady(instance)) { goto TERMINATE; }
-		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 	if (waitTxFifoEmpty(instance)) { goto TERMINATE; }
@@ -506,7 +506,7 @@ static void writeToTxFifo(struct MbUart* const instance)
 	for (int i = 0; i < XUL_FIFO_SIZE; i++) {
 		if (XUartLite_GetStatusReg(instance->baseAddr) & XUL_SR_TX_FIFO_FULL) { break; }
 		if (FixedQueue8_empty(instance->txQueue)) { break; }
-		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		XUartLite_WriteTxFifoReg(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 }

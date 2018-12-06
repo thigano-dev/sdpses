@@ -2,12 +2,12 @@
  * @file	fixed_queue8.c
  * @brief	fixed-size queue8
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -160,7 +160,7 @@ void FixedQueue8_pop(FixedQueue8* const self)
  *
  * @pre not empty
  */
-uint8_t FixedQueue8_peek(const FixedQueue8* const self)
+uint8_t FixedQueue8_front(const FixedQueue8* const self)
 {
 	ASSERT_(self->size > 0);
 

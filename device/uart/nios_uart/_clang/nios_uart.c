@@ -2,12 +2,12 @@
  * @file	nios_uart.c
  * @brief	Altera Avalon UART
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -312,7 +312,7 @@ int NiosUart_get(struct Uart* const self, uint8_t* const data)
 
 	alt_ic_irq_disable(instance->icId, instance->irq);
 	if (!FixedQueue8_empty(instance->rxQueue)) {
-		*data = FixedQueue8_peek(instance->rxQueue);
+		*data = FixedQueue8_front(instance->rxQueue);
 		FixedQueue8_pop(instance->rxQueue);
 		rc = 0;
 	}
@@ -338,7 +338,7 @@ int NiosUart_put(struct Uart* const self, const uint8_t data)
 		if (FixedQueue8_empty(instance->txQueue)) {
 			IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, data);
 		} else {
-			IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+			IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 			FixedQueue8_pop(instance->txQueue);
 			FixedQueue8_push(instance->txQueue, data);
 		}
@@ -370,7 +370,7 @@ int NiosUart_read(struct Uart* const self, uint8_t data_buff[], const unsigned i
 	alt_ic_irq_disable(instance->icId, instance->irq);
 	if (FixedQueue8_size(instance->rxQueue) >= data_count) {
 		for (unsigned int i = 0; i < data_count; i++) {
-			data_buff[i] = FixedQueue8_peek(instance->rxQueue);
+			data_buff[i] = FixedQueue8_front(instance->rxQueue);
 			FixedQueue8_pop(instance->rxQueue);
 		}
 		rc = 0;
@@ -447,7 +447,7 @@ int NiosUart_flush(struct Uart* const self)
 	alt_ic_irq_disable(instance->icId, instance->irq);
 	while (!FixedQueue8_empty(instance->txQueue)) {
 		if (waitStatusReady(instance, ALTERA_AVALON_UART_STATUS_TRDY_MSK)) { goto TERMINATE; }
-		IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 	if (waitStatusReady(instance, ALTERA_AVALON_UART_STATUS_TRDY_MSK)) { goto TERMINATE; }
@@ -609,7 +609,7 @@ static void transmitInterrupt(struct NiosUart* const instance)
 		instance->interruptFlags &= ~ALTERA_AVALON_UART_CONTROL_TRDY_MSK;
 		IOWR_ALTERA_AVALON_UART_CONTROL(instance->baseAddr, instance->interruptFlags);
 	} else {
-		IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_peek(instance->txQueue));
+		IOWR_ALTERA_AVALON_UART_TXDATA(instance->baseAddr, FixedQueue8_front(instance->txQueue));
 		FixedQueue8_pop(instance->txQueue);
 	}
 }

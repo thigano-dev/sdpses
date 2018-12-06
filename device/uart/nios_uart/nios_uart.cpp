@@ -2,12 +2,12 @@
  * @file	nios_uart.cpp
  * @brief	Altera Avalon UART
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -177,7 +177,7 @@ int NiosUart::get(uint8_t* const data)
 
 	alt_ic_irq_disable(kIC_ID, kIRQ);
 	if (!rxQueue_.empty()) {
-		*data = rxQueue_.peek();
+		*data = rxQueue_.front();
 		rxQueue_.pop();
 		rc = 0;
 	}
@@ -201,7 +201,7 @@ int NiosUart::put(const uint8_t data)
 		if (txQueue_.empty()) {
 			IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, data);
 		} else {
-			IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.peek());
+			IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.front());
 			txQueue_.pop();
 			txQueue_.push(data);
 		}
@@ -231,7 +231,7 @@ int NiosUart::read(uint8_t data_buff[], const unsigned int data_count)
 	alt_ic_irq_disable(kIC_ID, kIRQ);
 	if (rxQueue_.size() >= data_count) {
 		for (unsigned int i = 0; i < data_count; i++) {
-			data_buff[i] = rxQueue_.peek();
+			data_buff[i] = rxQueue_.front();
 			rxQueue_.pop();
 		}
 		rc = 0;
@@ -300,7 +300,7 @@ int NiosUart::flush()
 	alt_ic_irq_disable(kIC_ID, kIRQ);
 	while (!txQueue_.empty()) {
 		if (waitStatusReady(ALTERA_AVALON_UART_STATUS_TRDY_MSK)) { goto TERMINATE; }
-		IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.peek());
+		IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.front());
 		txQueue_.pop();
 	}
 	if (waitStatusReady(ALTERA_AVALON_UART_STATUS_TRDY_MSK)) { goto TERMINATE; }
@@ -446,7 +446,7 @@ void NiosUart::transmitInterrupt()
 		interruptFlags_ &= ~ALTERA_AVALON_UART_CONTROL_TRDY_MSK;
 		IOWR_ALTERA_AVALON_UART_CONTROL(kBASE_ADDR, interruptFlags_);
 	} else {
-		IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.peek());
+		IOWR_ALTERA_AVALON_UART_TXDATA(kBASE_ADDR, txQueue_.front());
 		txQueue_.pop();
 	}
 }

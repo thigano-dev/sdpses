@@ -2,12 +2,12 @@
  * @file	fixed_queue_inline.h
  * @brief	fixed-size queue inline
  * @author	Tsuguyoshi Higano
- * @date	Nov 13, 2017
+ * @date	Dec 06, 2018
  *
  * @par Project
  * Software Development Platform for Small-scale Embedded Systems (SDPSES)
  *
- * @copyright (c) Tsuguyoshi Higano, 2017
+ * @copyright (c) Tsuguyoshi Higano, 2017-2018
  *
  * @par License
  * Released under the MIT license@n
@@ -105,13 +105,13 @@ inline void FixedQueue<T>::pop()
  * @pre not empty
  */
 template <typename T>
-inline T& FixedQueue<T>::peek()
+inline T& FixedQueue<T>::front()
 {
 	return elements_[head_];
 }
 
 template <typename T>
-inline const T& FixedQueue<T>::peek() const
+inline const T& FixedQueue<T>::front() const
 {
 	return elements_[head_];
 }
